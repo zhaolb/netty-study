@@ -26,7 +26,9 @@ public class TimeClient {
                             socketChannel.pipeline().addLast(new TimeClientHandler());
                         }
                     });
+
             ChannelFuture f = b.connect(host, port).sync();
+
             f.channel().closeFuture().sync();
         } finally {
             group.shutdownGracefully();

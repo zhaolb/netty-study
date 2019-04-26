@@ -14,7 +14,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  */
 public class TimeServer {
     public void bind(int port) throws InterruptedException {
+        //创建2个线程组
+        //用于服务端接受客户端的连接
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
+
+        //用于进行SocketChannel的网络读写
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
@@ -23,8 +27,11 @@ public class TimeServer {
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG,1024)
                     .childHandler(new ChildChannelHandler());
+
+            //同步等待绑定完成
             ChannelFuture f = b.bind(port).sync();
 
+            //同步等待服务端链路关闭
             f.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
